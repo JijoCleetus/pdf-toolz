@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PDFDashboard from "./components/PDFDashboard.vue";
+import PDFDashboard from "./pages/PDFDashboard.vue";
 </script>
 
 <template>
