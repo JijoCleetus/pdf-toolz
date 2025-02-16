@@ -58,9 +58,9 @@ function onFilePicked(event: Event) {
       @change="onFilePicked"
     />
   </div>
-  <div class="card" v-if="showPdf">
+  <div v-if="showPdf">
     <h3>PDF Viewer</h3>
-    <PDFViewer :source="fileUrl" style="height: 100vh; width: 100vw" />
+    <PDFViewer :source="fileUrl" style="height: 100vh; width: 90vw" />
   </div>
 </template>
 
