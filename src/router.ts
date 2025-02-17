@@ -4,6 +4,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import PDFDashboard from "./pages/PDFDashboard.vue";
+import ConvertToPDF from "./pages/ConvertToPDF.vue";
 
 const env = import.meta.env;
 
@@ -16,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/convert",
     name: "Convert",
-    component: PDFDashboard,
+    component: ConvertToPDF,
   },
 ];
 

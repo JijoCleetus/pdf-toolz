@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const props = defineProps<{ title: string }>();
+import Navbar from "../components/Navbar.vue";
 </script>
 
 <template>
+  <Navbar />
   <router-view></router-view>
 </template>
 

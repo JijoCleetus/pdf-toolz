@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import Dashboard from "./pages/Dashboard.vue";
 import PDFDashboard from "./pages/PDFDashboard.vue";
 </script>
 
 <template>
-  <PDFDashboard title="PDF Toolz" />
+  <!-- <PDFDashboard title="PDF Toolz" /> -->
+  <Dashboard />
 </template>
 
 <style scoped>

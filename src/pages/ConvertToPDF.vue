@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
-import { Download, Upload } from "../utilities/supabase";
 import { decode } from "base64-arraybuffer";
-import PDFViewer from "pdf-viewer-vue";
-
-const props = defineProps<{ title: string }>();
+import { ref, useTemplateRef } from "vue";
 
 let fileUrl: File | object;
 let file: ArrayBuffer | string | null;
@@ -26,35 +22,34 @@ function onFilePicked(event: Event) {
   fileReader.addEventListener("load", () => {
     file = fileReader.result;
 
-    Upload(filename as string, decode(file as string))
-      .then((res) => {
-        console.log(res);
-        downloadAndDisplay(res.data?.path as string);
-      })
-      .catch((err) => {
-        console.log("Error occured", err);
-      });
+    //   Upload(filename as string, decode(file as string))
+    //     .then((res) => {
+    //       console.log(res);
+    //       downloadAndDisplay(res.data?.path as string);
+    //     })
+    //     .catch((err) => {
+    //       console.log("Error occured", err);
+    //     });
   });
 
-  function downloadAndDisplay(fileName: string) {
-    const { data } = Download(fileName);
-    fileUrl = data.publicUrl as any;
-    showPdf.value = true;
+  // function downloadAndDisplay(fileName: string) {
+  //   const { data } = Download(fileName);
+  //   fileUrl = data.publicUrl as any;
+  //   showPdf.value = true;
 
-    console.log(data);
-  }
+  //   console.log(data);
+  // }
 }
 </script>
 
 <template>
-  <h1>{{ title }}</h1>
   <div class="card">
-    <button type="button" @click="onPickFile">Load PDF</button>
+    <button type="button" @click="onPickFile">Load Image</button>
     <input
       type="file"
       style="display: none"
       ref="fileInput"
-      accept="application/pdf"
+      accept="image/png, image/gif, image/jpeg"
       @change="onFilePicked"
     />
   </div>
