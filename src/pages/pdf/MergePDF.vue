@@ -3,7 +3,7 @@ import { decode } from "base64-arraybuffer";
 import { ref, useTemplateRef } from "vue";
 
 import { jsPDF } from "jspdf";
-import { Download, Upload } from "../utilities/supabase";
+import { Download, Upload } from "../../utilities/supabase";
 import html2canvas from "html2canvas";
 
 let fileUrl: string;
@@ -47,10 +47,6 @@ function onFilePicked(event: Event) {
       pdf.addImage(imageData, "JPEG", 0, 0, 180, 180);
       pdf.save("download.pdf");
     });
-
-    // doc.addImage(fileUrl, "JPEG", 15, 40, 180, 180);
-
-    console.log(data);
   }
 }
 </script>
@@ -66,6 +62,7 @@ function onFilePicked(event: Event) {
       @change="onFilePicked"
     />
   </div>
+  https://www.npmjs.com/package/pdf-merger-js
   <img src="" id="image_hidden" />
   <div v-if="showPdf">
     <h3>PDF Viewer</h3>

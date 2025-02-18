@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
-import { Delete, Download, Upload } from "../utilities/supabase";
 import { decode } from "base64-arraybuffer";
-import PDFViewer from "pdf-viewer-vue";
+import { ref, useTemplateRef } from "vue";
 
-const props = defineProps<{ title: string }>();
+import { jsPDF } from "jspdf";
+import { Download, Upload } from "../../utilities/supabase";
+import html2canvas from "html2canvas";
 
-let fileUrl: File | object;
+let fileUrl: string;
 let file: ArrayBuffer | string | null;
 let showPdf = ref(false);
 
@@ -28,6 +28,7 @@ function onFilePicked(event: Event) {
 
     Upload(filename as string, decode(file as string))
       .then((res) => {
+        console.log(res);
         downloadAndDisplay(res.data?.path as string);
       })
       .catch((err) => {
@@ -38,32 +39,34 @@ function onFilePicked(event: Event) {
   function downloadAndDisplay(fileName: string) {
     const { data } = Download(fileName);
     fileUrl = data.publicUrl as any;
-    showPdf.value = true;
-    setTimeout(() => {
-      removeFile(fileName);
-    }, 5000);
-  }
+    const image = document.getElementById("image_hidden") as HTMLImageElement;
+    image.src = fileUrl;
+    html2canvas(image).then((canvas) => {
+      const imageData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imageData, "JPEG", 0, 0, 180, 180);
+      pdf.save("download.pdf");
+    });
 
-  function removeFile(fileName: string) {
-    Delete(fileName)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // doc.addImage(fileUrl, "JPEG", 15, 40, 180, 180);
+
+    console.log(data);
   }
 }
 </script>
 
 <template>
-  <!-- <h1>{{ title }}</h1> -->
   <div class="card">
-    <button type="button" @click="onPickFile">Load PDF</button>
+    <button type="button" @click="onPickFile">Load Image</button>
     <input
       type="file"
       style="display: none"
       ref="fileInput"
-      accept="application/pdf"
+      accept="image/png, image/gif, image/jpeg"
       @change="onFilePicked"
     />
   </div>
+  <img src="" id="image_hidden" />
   <div v-if="showPdf">
     <h3>PDF Viewer</h3>
     <PDFViewer :source="fileUrl" style="height: 100vh; width: 96vw" />

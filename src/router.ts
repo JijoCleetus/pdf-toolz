@@ -3,8 +3,9 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
-import PDFDashboard from "./pages/PDFDashboard.vue";
-import ConvertToPDF from "./pages/ConvertToPDF.vue";
+import LoadPDF from "./pages/pdf/LoadPDF.vue";
+import MergePDF from "./pages/pdf/MergePDF.vue";
+import ConvertToPDF from "./pages/pdf/ConvertToPDF.vue";
 
 const env = import.meta.env;
 
@@ -12,12 +13,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "LoadPDF",
-    component: PDFDashboard,
+    component: LoadPDF,
   },
   {
     path: "/convert",
     name: "Convert",
     component: ConvertToPDF,
+  },
+  {
+    path: "/merge",
+    name: "Merge",
+    component: MergePDF,
   },
 ];
 
