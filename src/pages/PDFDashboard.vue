@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
-import { Download, Upload } from "../utilities/supabase";
+import { Delete, Download, Upload } from "../utilities/supabase";
 import { decode } from "base64-arraybuffer";
 import PDFViewer from "pdf-viewer-vue";
 
@@ -28,7 +28,6 @@ function onFilePicked(event: Event) {
 
     Upload(filename as string, decode(file as string))
       .then((res) => {
-        console.log(res);
         downloadAndDisplay(res.data?.path as string);
       })
       .catch((err) => {
@@ -40,14 +39,21 @@ function onFilePicked(event: Event) {
     const { data } = Download(fileName);
     fileUrl = data.publicUrl as any;
     showPdf.value = true;
+    setTimeout(() => {
+      removeFile(fileName);
+    }, 5000);
+  }
 
-    console.log(data);
+  function removeFile(fileName: string) {
+    Delete(fileName)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   }
 }
 </script>
 
 <template>
-  <h1>{{ title }}</h1>
+  <!-- <h1>{{ title }}</h1> -->
   <div class="card">
     <button type="button" @click="onPickFile">Load PDF</button>
     <input

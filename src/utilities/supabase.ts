@@ -21,4 +21,8 @@ const Download = (fileName: string) => {
     .getPublicUrl(fileName);
 };
 
-export { Upload, Download };
+const Delete = (fileName: string) => {
+  return supabase.storage.from(env.VITE_SUPABASE_BUCKET_URL).remove([fileName]);
+};
+
+export { Upload, Download, Delete };

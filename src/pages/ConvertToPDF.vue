@@ -2,7 +2,11 @@
 import { decode } from "base64-arraybuffer";
 import { ref, useTemplateRef } from "vue";
 
-let fileUrl: File | object;
+import { jsPDF } from "jspdf";
+import { Download, Upload } from "../utilities/supabase";
+import html2canvas from "html2canvas";
+
+let fileUrl: string;
 let file: ArrayBuffer | string | null;
 let showPdf = ref(false);
 
@@ -22,23 +26,32 @@ function onFilePicked(event: Event) {
   fileReader.addEventListener("load", () => {
     file = fileReader.result;
 
-    //   Upload(filename as string, decode(file as string))
-    //     .then((res) => {
-    //       console.log(res);
-    //       downloadAndDisplay(res.data?.path as string);
-    //     })
-    //     .catch((err) => {
-    //       console.log("Error occured", err);
-    //     });
+    Upload(filename as string, decode(file as string))
+      .then((res) => {
+        console.log(res);
+        downloadAndDisplay(res.data?.path as string);
+      })
+      .catch((err) => {
+        console.log("Error occured", err);
+      });
   });
 
-  // function downloadAndDisplay(fileName: string) {
-  //   const { data } = Download(fileName);
-  //   fileUrl = data.publicUrl as any;
-  //   showPdf.value = true;
+  function downloadAndDisplay(fileName: string) {
+    const { data } = Download(fileName);
+    fileUrl = data.publicUrl as any;
+    const image = document.getElementById("image_hidden") as HTMLImageElement;
+    image.src = fileUrl;
+    html2canvas(image).then((canvas) => {
+      const imageData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imageData, "JPEG", 0, 0, 180, 180);
+      pdf.save("download.pdf");
+    });
 
-  //   console.log(data);
-  // }
+    // doc.addImage(fileUrl, "JPEG", 15, 40, 180, 180);
+
+    console.log(data);
+  }
 }
 </script>
 
@@ -53,6 +66,7 @@ function onFilePicked(event: Event) {
       @change="onFilePicked"
     />
   </div>
+  <img src="" id="image_hidden" />
   <div v-if="showPdf">
     <h3>PDF Viewer</h3>
     <PDFViewer :source="fileUrl" style="height: 100vh; width: 96vw" />
