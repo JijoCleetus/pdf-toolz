@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
 import { jsPDF, type RGBAData } from "jspdf";
+import { Upload } from "../../utilities/supabase";
+import { decode } from "base64-arraybuffer";
 
 let fileUrl: string;
 let file:
@@ -27,7 +29,19 @@ function onFilePicked(event: Event) {
     file = fileReader.result as string;
     const pdf = new jsPDF();
     pdf.addImage(file, "JPEG", 15, 40, 180, 180);
-    pdf.save("download.pdf");
+    var iframe = document.getElementById("pdf-viewer")! as HTMLIFrameElement;
+    iframe.src = pdf.output("datauristring");
+    //TODO: Need to change the logic to upload and replace the ifram with PDFViewer
+    Upload(
+      "filename.pdf" as string,
+      decode(pdf.output("datauristring") as string)
+    )
+      .then((res) => {
+        // downloadAndDisplay(res.data?.path as string);
+      })
+      .catch((err) => {
+        console.log("Error occured", err);
+      });
   });
 }
 </script>
@@ -43,10 +57,21 @@ function onFilePicked(event: Event) {
       @change="onFilePicked"
     />
   </div>
-  <div v-if="showPdf">
+  <!-- <div v-if="showPdf"> -->
+  <div>
     <h3>PDF Viewer</h3>
-    <PDFViewer :source="fileUrl" style="height: 100vh; width: 96vw" />
+    <iframe id="pdf-viewer"></iframe>
+    <!-- <PDFViewer :source="fileUrl" style="height: 100vh; width: 96vw" /> -->
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#pdf-viewer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+</style>
