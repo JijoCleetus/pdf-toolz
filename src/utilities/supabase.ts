@@ -14,6 +14,14 @@ const Upload = (fileName: string, file: any) => {
       upsert: true,
     });
 };
+const UploadImage = (fileName: string, file: any) => {
+  return supabase.storage
+    .from(env.VITE_SUPABASE_BUCKET_URL)
+    .upload(fileName, file, {
+      upsert: true,
+      contentType: "image/jpeg",
+    });
+};
 
 const Download = (fileName: string) => {
   return supabase.storage
@@ -25,4 +33,4 @@ const Delete = (fileName: string) => {
   return supabase.storage.from(env.VITE_SUPABASE_BUCKET_URL).remove([fileName]);
 };
 
-export { Upload, Download, Delete };
+export { Upload, Download, Delete, UploadImage };
